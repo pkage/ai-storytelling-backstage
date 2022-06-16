@@ -6,13 +6,13 @@ We can run Hugging Face transformers locally via the `transformers` package on P
 
 ## Models
 
-### Text -> Text
+### Text → Text
 
-### Text -> Image
+### Text → Image
 
-### Image -> Text
+### Image → Text
 
-### Image -> Image
+### Image → Image
 
 ### Sentiment analysis
 
