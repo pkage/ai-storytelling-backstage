@@ -43,5 +43,12 @@ being typecast and did a hell'''
 
 
 results = main.summarization(article)
-pprint(results)
+summary = results[0]['summary_text']
+
+print(summary)
+print(main.sentiment_analysis(summary))
+
+
+
+
 

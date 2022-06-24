@@ -54,3 +54,47 @@ def text_generation(
     )
 
 
+def sentiment_analysis(
+        text,
+        model='distilbert-base-uncased-finetuned-sst-2-english',
+        seed=None
+    ):
+
+    _seed_if_necessary(seed)
+
+    pipe = pipeline(task='sentiment-analysis', model=model)
+
+    return pipe(text)
+
+
+def fill_mask(
+        text,
+        model='bert-base-uncased',
+        seed=None
+    ):
+
+    _seed_if_necessary(seed)
+
+    pipe = pipeline(task='fill-mask', model=model)
+
+    return pipe(text)
+
+
+def question_answering(
+        question,
+        context,
+        model='roberta-base-squad2',
+        seed=None
+    ):
+
+    _seed_if_necessary(seed)
+
+    pipe = pipeline(task='question_answering', model=model)
+
+    return pipe({
+        'question': question,
+        'context': context
+    })
+
+
+
