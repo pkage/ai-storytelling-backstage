@@ -117,7 +117,7 @@ def text_generation(
         num_return_sequences=3,
         model='small',
         seed=None,
-        render=None
+        render=True
     ):
     '''
     Generate text from a prompt.
