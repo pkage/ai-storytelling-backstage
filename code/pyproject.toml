@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ai-storytelling"
+name = "aist"
 version = "0.1.0"
 description = "AI and Storytelling Central Codebase"
 authors = ["Patrick Kage <p.kage@ed.ac.uk>"]

@@ -3,7 +3,7 @@
 from transformers import pipeline, set_seed
 from pprint import pprint
 
-import main
+from aist import text
 # from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
@@ -42,11 +42,11 @@ being typecast and did a hell'''
 # results = generator("In a world far away", max_length=200, num_return_sequences=1)
 
 
-results = main.summarization(article)
+results = text.summarization(article)
 summary = results[0]['summary_text']
 
 print(summary)
-print(main.sentiment_analysis(summary))
+print(text.sentiment_analysis(summary))
 
 
 

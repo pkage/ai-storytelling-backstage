@@ -1,3 +1,5 @@
+### Model cache
+model_cache/
 ### Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
