@@ -40,6 +40,9 @@ def _is_notebook() -> bool:
         if shell == 'ZMQInteractiveShell':
             # Jupyter notebook or qtconsole
             return True
+        elif shell == 'Shell':
+            # Colab
+            return True
         elif shell == 'TerminalInteractiveShell':
             # Terminal running IPython
             return False
