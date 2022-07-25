@@ -134,8 +134,12 @@ def text_generation(
     Generate text from a prompt.
 
     Options for model are:
-        - 'small', 'medium', 'large' (mapping to distilgpt2, gpt2, and gpt-j-6b)
+        - 'small', 'medium', 'large' (mapping to distilgpt2, gpt2, and gpt-2-large)
         - any other text model on HF
+
+    Some models to try:
+        - EleutherAI/gpt-j-6b
+        - facebook/opt-1.3b
 
     :param prompt: Text to prompt the pipeline with.
     :param model: (optional) Model to use. Default 'small'.
@@ -155,7 +159,7 @@ def text_generation(
         mapping = {
             'small': 'distilgpt2',
             'medium': 'gpt2',
-            'large': 'EleutherAI/gpt-j-6B'
+            'large': 'gpt2-large'
         }
         model = mapping[model]
 
