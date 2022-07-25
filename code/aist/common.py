@@ -1,3 +1,4 @@
+import torch
 
 def is_notebook() -> bool:
     '''
@@ -26,3 +27,11 @@ def is_notebook() -> bool:
     except NameError:
         # Probably standard Python interpreter
         return False
+
+def is_gpu_available():
+    '''
+    Check if this environment supports gpu acceleration
+
+    :return: True if acceleration is available
+    '''
+    return torch.cuda.is_available()
