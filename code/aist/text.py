@@ -160,6 +160,7 @@ def text_generation(
     device = _get_pipeline_device(accelerate=accelerate)
 
     pipe = pipeline(task='text-generation', model=model, device=device)
+    print(f'running on device {device}')
 
     results = pipe(
         prompt,
