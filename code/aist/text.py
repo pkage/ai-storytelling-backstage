@@ -2,7 +2,7 @@
 
 import os
 from textwrap import dedent
-from .common import is_notebook
+from .common import is_notebook, is_gpu_available
 
 # this is nasty but we have to make sure the HF model cache directory is
 # created before we load in the transformers library
@@ -62,6 +62,19 @@ def _render_output_text(output: List[str]):
     return display(Markdown(text))
 
 
+def _get_pipeline_device(accelerate=True):
+    '''
+    Determine CUDA device to use.
+
+    :param accelerate: (optional) Whether to use acceleration if it is available. Default True
+    :return: The pipeline device argument
+    '''
+    if accelerate and is_gpu_available():
+        return 0
+
+    return -1
+
+
 def summarization(
         text,
         model='facebook/bart-large-cnn',
@@ -111,6 +124,7 @@ def text_generation(
         num_return_sequences=3,
         model='small',
         seed=None,
+        accelerate=True,
         render=True
     ):
     '''
@@ -124,6 +138,7 @@ def text_generation(
     :param model: (optional) Model to use. Default 'small'.
     :param max_length: (optional) Length of text to generate. Default 200.
     :param num_return_sequences: (optional) Number of different responses to make. Default 3.
+    :param accelerate: (optional) Whether to use GPU acceleration (where available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -141,7 +156,10 @@ def text_generation(
         }
         model = mapping[model]
 
-    pipe = pipeline(task='text-generation', model=model)
+
+    device = _get_pipeline_device(accelerate=accelerate)
+
+    pipe = pipeline(task='text-generation', model=model, device=device)
 
     results = pipe(
         prompt,
