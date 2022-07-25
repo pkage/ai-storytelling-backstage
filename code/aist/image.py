@@ -55,6 +55,7 @@ def generate_images(
         model_size='mini',
         temperature=1,
         show_in_progress=False,
+        accelerate=True,
         render=True,
         seed=None
     ):
@@ -74,6 +75,7 @@ def generate_images(
     :param grid_size: (optional) The size of the grid. Default 3.
     :param temperature: (optional) How much variety to introduce into the outputs (higher means more variety). Default 1
     :param show_in_progress: (optional) Show in-progress images as they are rendered. Default False.
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -85,7 +87,7 @@ def generate_images(
         seed = -1
 
     # create the model
-    model = _make_model(model_size=model_size)
+    model = _make_model(model_size=model_size, device=None if accelerate else 'cpu')
 
     if not render or not is_notebook():
         images = model.generate_images(

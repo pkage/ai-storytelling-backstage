@@ -81,6 +81,7 @@ def summarization(
         max_length=130,
         min_length=30,
         do_sample=False,
+        accelerate=True,
         seed=None,
         render=True
     ):
@@ -92,6 +93,7 @@ def summarization(
     :param max_length: (optional) The minimum length of the summary. (default 30)
     :param min_length: (optional) The maximum length of the summary. (default 130)
     :param do_sample: (optional) Whether to subsample input (default False)
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -99,7 +101,8 @@ def summarization(
     '''
     _seed_if_necessary(seed)
 
-    pipe = pipeline(task='summarization', model=model)
+    device = _get_pipeline_device(accelerate=accelerate)
+    pipe = pipeline(task='summarization', model=model, device=device)
 
     results = pipe(
         text,
@@ -138,7 +141,7 @@ def text_generation(
     :param model: (optional) Model to use. Default 'small'.
     :param max_length: (optional) Length of text to generate. Default 200.
     :param num_return_sequences: (optional) Number of different responses to make. Default 3.
-    :param accelerate: (optional) Whether to use GPU acceleration (where available). Default True
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -158,9 +161,7 @@ def text_generation(
 
 
     device = _get_pipeline_device(accelerate=accelerate)
-
     pipe = pipeline(task='text-generation', model=model, device=device)
-    print(f'running on device {device}')
 
     results = pipe(
         prompt,
@@ -182,6 +183,7 @@ def text_generation(
 def sentiment_analysis(
         text,
         model='distilbert-base-uncased-finetuned-sst-2-english',
+        accelerate=True,
         seed=None,
         render=True
     ):
@@ -190,6 +192,7 @@ def sentiment_analysis(
 
     :param text: The text to analyze.
     :param model: (optional) The model to use for analysis.
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -197,7 +200,8 @@ def sentiment_analysis(
     '''
     _seed_if_necessary(seed)
 
-    pipe = pipeline(task='sentiment-analysis', model=model)
+    device = _get_pipeline_device(accelerate=accelerate)
+    pipe = pipeline(task='sentiment-analysis', model=model, device=device)
 
     sentiment = pipe(text)[0]
 
@@ -211,6 +215,7 @@ def sentiment_analysis(
 def fill_mask(
         text,
         model='bert-base-uncased',
+        accelerate=True,
         seed=None,
         render=True
     ):
@@ -219,6 +224,7 @@ def fill_mask(
 
     :param text: The text to fill, with the mask token in it.
     :param model: (optional) The model to use.
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -226,7 +232,8 @@ def fill_mask(
     '''
     _seed_if_necessary(seed)
 
-    pipe = pipeline(task='fill-mask', model=model)
+    device = _get_pipeline_device(accelerate=accelerate)
+    pipe = pipeline(task='fill-mask', model=model, device=device)
 
     masks = pipe(text)
 
@@ -249,6 +256,7 @@ def question_answering(
         question,
         context,
         model='deepset/roberta-base-squad2',
+        accelerate=True,
         seed=None,
         render=True
     ):
@@ -258,6 +266,7 @@ def question_answering(
     :param question: The question to answer from the data.
     :param context: The context from which to draw the answer.
     :param model: (optional) The model to use.
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
                    if one is detected. Default True
@@ -266,7 +275,8 @@ def question_answering(
     '''
     _seed_if_necessary(seed)
 
-    pipe = pipeline(task='question-answering', model=model)
+    device = _get_pipeline_device(accelerate=accelerate)
+    pipe = pipeline(task='question-answering', model=model, device=device)
 
     answer = pipe({
         'question': question,
