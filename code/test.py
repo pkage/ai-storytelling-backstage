@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from transformers import pipeline, set_seed
+from textwrap import dedent
 from pprint import pprint
 
 from aist import text
@@ -13,9 +14,6 @@ from aist import text
 #         model='distilgpt2',
 #         tokenizer=tokenizer
 # )
-
-# results = generator(['My name is Buck and i like to '])
-
 
 article = '''In a world far away, there was a time when a certain 
 young man sat in a chair and wrote a story, one that 
@@ -42,12 +40,13 @@ being typecast and did a hell'''
 # results = generator("In a world far away", max_length=200, num_return_sequences=1)
 
 
-results = text.summarization(article)
-summary = results[0]['summary_text']
+# results = text.summarization(article)
+# summary = results[0]['summary_text']
 
-print(summary)
-print(text.sentiment_analysis(summary))
+# print(summary)
+# print(text.sentiment_analysis(summary))
 
+pprint(text.text_generation('Hello world', model='large', num_return_sequences=1))
 
 
 
