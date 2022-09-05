@@ -49,7 +49,7 @@ def _make_model(device=None, model_size='mini'):
     return model
 
 
-def generate_images(
+def image_generation(
         prompt,
         grid_size=2,
         model_size='mini',

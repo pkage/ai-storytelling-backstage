@@ -34,9 +34,9 @@ def _seed_if_necessary(seed):
     Quick function that sets the seed if it's passed. If not provided,
     no seed will be explicitly set
 
-    :param seed: Seed to set or None
+    :param seed: Seed to set or None or -1
     '''
-    if seed is not None:
+    if seed is not None or seed == -1:
         set_seed(seed)
 
 
@@ -216,7 +216,7 @@ def sentiment_analysis(
     return display(Markdown(f'<span style="color: {color};">{sentiment["label"]}</span> (score: {sentiment["score"]*100}%)'))
 
 
-def fill_mask(
+def mask_filling(
         text,
         model='bert-base-uncased',
         accelerate=True,

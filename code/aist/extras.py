@@ -2,8 +2,9 @@ from IPython.display import Markdown, display
 from .text import sentiment_analysis
 
 
-def rank_by_sentiment(strings, render=True, seed=None):
+def sentiment_ranking(strings, render=True, seed=None):
     """
+    Rank a list of strings by sentiment
 
     :param strings: 
     :param seed: (optional) Seed value for reproducible pipeline runs.
