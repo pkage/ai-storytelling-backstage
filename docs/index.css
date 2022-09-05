@@ -1,0 +1,136 @@
+:root {
+    --link: #74b9ff;
+    --link-active: #0984e3;
+
+    --fg: #444;
+    --bg: #fffffd;
+
+    --main-width: 70ch;
+       
+}
+
+html {
+    background-color: var(--bg);
+    color: var(--fg);
+
+    line-height: 1.5;
+
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+
+}
+
+h1, h2, h3 {
+    font-weight: 300;
+}
+
+h1 {
+    font-size: 2em;
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+main {
+    padding: 2rem 1rem;
+}
+
+figure.logo {
+    margin: 0 0 0 0;
+}
+
+figure.logo > img {
+    width: 17ch;
+    height: auto;
+}
+
+section {
+    margin: 2rem 0;
+}
+
+
+/* --- link boxes --- */
+
+a.linkbox {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    margin: 1.5rem 0;
+
+    color: var(--fg);
+    text-decoration: none;
+    cursor: pointer;
+
+    padding: 15px;
+
+    border: 1px solid var(--fg);
+    border-radius: 5px;
+
+    transform: color        0.2s cubic-bezier(0,0,0.3,1),
+               border-color 0.2s cubic-bezier(0,0,0.3,1);
+}
+
+a.linkbox:hover {
+    border-color: var(--link);
+    color: var(--link);
+}
+
+a.linkbox:active {
+    border-color: var(--link-active);
+    color: var(--link-active);
+}
+
+.linkbox__icon {
+    font-size: 1.75rem;
+    width: 4rem;
+    text-align: center;
+}
+
+
+.linkbox__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.linkbox__content  strong {
+    font-size: 1.2em;
+}
+
+.linkbox__icon {
+    /* display: none; */
+}
+
+@media (min-width: 768px) {
+    main {
+        margin-left: calc(50vw - (var(--main-width) / 2));
+        width: var(--main-width);
+    }
+
+    figure.logo {
+        margin: 0 0 -1rem 0;
+    }
+
+    h1 {
+        font-size: 4em;
+        line-height: 1.1;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+
+    a.linkbox {
+        padding: 15px 15px 15px 0;
+        flex-direction: row !important;
+    }
+
+    .linkbox__icon {
+        display: initial;
+    }
+}
+
