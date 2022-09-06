@@ -202,7 +202,19 @@ def image_generation(
         display(image)
 
 
-def stable_diffusion(prompt, accelerate=True, seed=None):
+def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), seed=None):
+    '''
+    Generates an image from a text prompt.
+    Powered by a stable diffusion pipeline.
+
+    :param prompt: Text prompt to guide image generation
+    :param rounds: (optional) How many inference rounds to do. More rounds yields more coherent results. Default 50
+    :param dims: (optional) Dimensions of image to create. Default 512x512
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
+    :param seed: (optional) Seed value for reproducible pipeline runs.
+    :return: 
+    '''
+
 
     device = None if accelerate else 'cpu'
 
@@ -213,18 +225,25 @@ def stable_diffusion(prompt, accelerate=True, seed=None):
         generator = Generator(_get_device(device)).manual_seed(seed)
 
     with autocast("cuda"):
-        image = model(prompt, generator=generator)["sample"][0]
+        image = model(
+            prompt,
+            num_inference_steps=rounds,
+            height=dims[1],
+            width=dims[0],
+            generator=generator
+        )["sample"][0]
 
     return image
 
 
-def stable_diffusion_img2img(image, prompt, dims=(512,512), strength=0.75, guidance_scale=7, accelerate=True, seed=None):
+def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=0.75, guidance_scale=7, accelerate=True, seed=None):
     '''
     Generates an image from a source image, guided by a text prompt.
     Powered by a stable diffusion pipeline.
 
     :param image: Initial image to work on. Pass either a path or a Pillow image
     :param prompt: Text prompt to guide image generation
+    :param rounds: (optional) How many inference rounds to do. More rounds yields more coherent results. Default 50
     :param dims: (optional) Dimensions to scale output image to. Default 512x512
     :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
     :param guidance_scale: (optional) How much to weight the text prompt. Default 7
@@ -252,6 +271,7 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), strength=0.75, guida
         image = model(
             prompt=prompt,
             init_image=image,
+            num_inference_steps=rounds,
             strength=strength,
             guidance_scale=guidance_scale,
             generator=generator
