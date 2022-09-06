@@ -12,6 +12,7 @@ matplotlib = "^3.5.3"
 # pinned from git version because this ISN'T ON PYPI YET!!!
 requests = "^2.28.1"
 diffusers = {git = "https://github.com/huggingface/diffusers"}
+ftfy = "^6.1.1"
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^6.15.0"
