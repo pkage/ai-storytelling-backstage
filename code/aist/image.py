@@ -104,7 +104,7 @@ def _make_diffusion_model_text(device=None, unsafe=False):
             'CompVis/stable-diffusion-v1-4', 
             use_auth_token=True, 
             cache_dir='./model_cache/hf-home',
-            safety_checker=safety_checker
+            # safety_checker=safety_checker
         )
     else:
         pipe = StableDiffusionPipeline.from_pretrained(
@@ -113,7 +113,7 @@ def _make_diffusion_model_text(device=None, unsafe=False):
             torch_dtype=torch.float16,
             use_auth_token=True,
             cache_dir='./model_cache/hf-home',
-            safety_checker=safety_checker
+            # safety_checker=safety_checker
         )
 
     pipe = pipe.to(device)
@@ -134,8 +134,8 @@ def _make_diffusion_model_image(device=None, unsafe=False):
         pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
             'CompVis/stable-diffusion-v1-4', 
             use_auth_token=True, 
-            cache_dir='./model_cache/hf-home',
-            safety_checker=safety_checker
+            cache_dir='./model_cache/hf-home'
+            # safety_checker=safety_checker
         )
     else:
         pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
@@ -143,8 +143,8 @@ def _make_diffusion_model_image(device=None, unsafe=False):
             revision="fp16",
             torch_dtype=torch.float16,
             use_auth_token=True,
-            cache_dir='./model_cache/hf-home',
-            safety_checker=safety_checker
+            cache_dir='./model_cache/hf-home'
+            # safety_checker=safety_checker
         )
 
     pipe = pipe.to(device)
