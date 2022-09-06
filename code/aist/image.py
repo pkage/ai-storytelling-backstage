@@ -6,6 +6,8 @@ import requests
 
 from IPython.display import display
 from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline
+from .extras.safety import StableDiffusionSafetyCheckerDisable
+from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker
 from min_dalle import MinDalle
 import torch
 from PIL import Image
@@ -37,7 +39,16 @@ def _setup():
 
 _setup()
 
+
+
+
 def _get_device(device):
+    '''
+    Figure out which device we should be running stuff on.
+
+    :param device: Device to prefer (None for auto)
+    :return: 'cuda' or 'cpu'
+    '''
     if device is None:
         if torch.cuda.is_available():
             return 'cuda'
@@ -78,18 +89,22 @@ def _drop_hf_token():
 
             token_file.write(token)
 
-def _make_diffusion_model_text(device=None):
+def _make_diffusion_model_text(device=None, unsafe=False):
     # simulates a login
     _drop_hf_token()
 
     # automatically determine the device to use
     device = _get_device(device)
 
+    # safety models
+    safety_checker = StableDiffusionSafetyChecker if not unsafe else StableDiffusionSafetyCheckerDisable
+
     if device == 'cpu':
         pipe = StableDiffusionPipeline.from_pretrained(
             'CompVis/stable-diffusion-v1-4', 
             use_auth_token=True, 
-            cache_dir='./model_cache/hf-home'
+            cache_dir='./model_cache/hf-home',
+            safety_checker=safety_checker
         )
     else:
         pipe = StableDiffusionPipeline.from_pretrained(
@@ -97,25 +112,30 @@ def _make_diffusion_model_text(device=None):
             revision="fp16",
             torch_dtype=torch.float16,
             use_auth_token=True,
-            cache_dir='./model_cache/hf-home'
+            cache_dir='./model_cache/hf-home',
+            safety_checker=safety_checker
         )
 
     pipe = pipe.to(device)
     return pipe
 
 
-def _make_diffusion_model_image(device=None):
+def _make_diffusion_model_image(device=None, unsafe=False):
     # simulates a login
     _drop_hf_token()
 
     # automatically determine the device to use
     device = _get_device(device)
 
+    # safety models
+    safety_checker = StableDiffusionSafetyChecker if not unsafe else StableDiffusionSafetyCheckerDisable
+
     if device == 'cpu':
         pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
             'CompVis/stable-diffusion-v1-4', 
             use_auth_token=True, 
-            cache_dir='./model_cache/hf-home'
+            cache_dir='./model_cache/hf-home',
+            safety_checker=safety_checker
         )
     else:
         pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
@@ -123,7 +143,8 @@ def _make_diffusion_model_image(device=None):
             revision="fp16",
             torch_dtype=torch.float16,
             use_auth_token=True,
-            cache_dir='./model_cache/hf-home'
+            cache_dir='./model_cache/hf-home',
+            safety_checker=safety_checker
         )
 
     pipe = pipe.to(device)
@@ -202,7 +223,7 @@ def image_generation(
         display(image)
 
 
-def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), seed=None):
+def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), unsafe=False, seed=None):
     '''
     Generates an image from a text prompt.
     Powered by a stable diffusion pipeline.
@@ -218,7 +239,7 @@ def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), seed=No
 
     device = None if accelerate else 'cpu'
 
-    model = _make_diffusion_model_text(device=device)
+    model = _make_diffusion_model_text(device=device, unsafe=unsafe)
 
     generator = None
     if seed is not None:
@@ -236,7 +257,7 @@ def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), seed=No
     return image
 
 
-def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=0.75, guidance_scale=7, accelerate=True, seed=None):
+def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=0.75, guidance_scale=7, unsafe=False, accelerate=True, seed=None):
     '''
     Generates an image from a source image, guided by a text prompt.
     Powered by a stable diffusion pipeline.
@@ -261,7 +282,7 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
 
     device = None if accelerate else 'cpu'
 
-    model = _make_diffusion_model_image(device=device)
+    model = _make_diffusion_model_image(device=device, unsafe=unsafe)
 
     generator = None
     if seed is not None:

@@ -1,5 +1,5 @@
 from IPython.display import Markdown, display
-from .text import sentiment_analysis
+from ..text import sentiment_analysis
 
 
 def sentiment_ranking(strings, render=True, seed=None):
