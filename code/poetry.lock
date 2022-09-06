@@ -175,7 +175,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "diffusers"
-version = "0.3.0.dev0"
+version = "0.2.4"
 description = "Diffusers"
 category = "main"
 optional = false
@@ -184,7 +184,7 @@ develop = false
 
 [package.dependencies]
 filelock = "*"
-huggingface-hub = ">=0.8.1"
+huggingface-hub = ">=0.8.1,<1.0"
 importlib-metadata = "*"
 numpy = "*"
 Pillow = "*"
@@ -193,17 +193,17 @@ requests = "*"
 torch = ">=1.4"
 
 [package.extras]
-dev = ["accelerate", "black (==22.3)", "datasets", "flake8 (>=3.8.3)", "hf-doc-builder", "isort (>=5.5.4)", "modelcards", "pytest", "pytest-timeout", "pytest-xdist", "scipy", "tensorboard", "transformers"]
+dev = ["accelerate", "black (==22.3)", "datasets", "flake8 (>=3.8.3)", "hf-doc-builder", "isort (>=5.5.4)", "modelcards", "pytest", "pytest-timeout", "pytest-xdist", "tensorboard"]
 docs = ["hf-doc-builder"]
 quality = ["black (==22.3)", "flake8 (>=3.8.3)", "hf-doc-builder", "isort (>=5.5.4)"]
-test = ["datasets", "pytest", "pytest-timeout", "pytest-xdist", "scipy", "transformers"]
+test = ["pytest", "pytest-timeout", "pytest-xdist"]
 training = ["accelerate", "datasets", "modelcards", "tensorboard"]
 
 [package.source]
 type = "git"
 url = "https://github.com/huggingface/diffusers"
-reference = "HEAD"
-resolved_reference = "f085d2f5c6569a1c0d90327c51328622036ef76e"
+reference = "a4d5b59f132126c06c1a6b1f266ee44c70440cce"
+resolved_reference = "a4d5b59f132126c06c1a6b1f266ee44c70440cce"
 
 [[package]]
 name = "docker-pycreds"
@@ -1406,7 +1406,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "60fd1594a4c51594a813f3c81808de582d003eb1de356ce24c5407bb9d047c31"
+content-hash = "a22eee324e93fa2adb7385f184ac5f9353bac10fda353cf7b6c08fe4a391b7a8"
 
 [metadata.files]
 appnope = [
