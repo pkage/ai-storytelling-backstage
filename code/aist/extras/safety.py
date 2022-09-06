@@ -19,7 +19,7 @@ def cosine_distance(image_embeds, text_embeds):
 class StableDiffusionSafetyCheckerDisable(PreTrainedModel):
     config_class = CLIPConfig
 
-    def __init__(self, config: CLIPConfig):
+    def __init__(self, config: CLIPConfig, images=None):
         super().__init__(config)
 
         self.vision_model = CLIPVisionModel(config.vision_config)
