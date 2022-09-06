@@ -1,12 +1,21 @@
 import os
+import os
 import warnings
 
+import requests
+
 from IPython.display import display
+from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline
 from min_dalle import MinDalle
 import torch
+from PIL import Image
+from torch import Generator, autocast
 
 from .common import is_notebook
 
+HF_TOKEN_URL = 'https://cdn.ka.ge/vault/hf_aist.txt'
+HF_TOKEN_LOCATION = os.path.expanduser('~/.huggingface')
+HF_TOKEN_PATH = os.path.expanduser('~/.huggingface/token')
 
 # this is nasty but we have to make sure the HF model cache directory is
 # created before we load in the transformers library
@@ -15,13 +24,29 @@ def _setup():
     if not os.path.exists('./model_cache/dalle'):
         os.makedirs('./model_cache/dalle')
 
+    # make sure that the huggingface directory exists when dropping a token
+    if not os.path.exists(HF_TOKEN_LOCATION):
+        os.makedirs(HF_TOKEN_LOCATION)
+
     # also ignore warnings
+    if not 'HF_HOME' in os.environ:
+        if not os.path.exists('./model_cache/hf-home'):
+            os.makedirs('./model_cache/hf-home')
+
     warnings.simplefilter('ignore')
 
 _setup()
 
+def _get_device(device):
+    if device is None:
+        if torch.cuda.is_available():
+            return 'cuda'
+        else:
+            return 'cpu'
 
-def _make_model(device=None, model_size='mini'):
+
+
+def _make_dalle_model(device=None, model_size='mini'):
     '''
     Create a dalle model.
 
@@ -30,11 +55,8 @@ def _make_model(device=None, model_size='mini'):
     :return: An initialized DallE model.
     '''
     # automatically determine the device to use
-    if device is None:
-        if torch.cuda.is_available():
-            device = 'cuda'
-        else:
-            device = 'cpu'
+
+    device = _get_device(device)
 
     is_mega = model_size == 'mega'
 
@@ -47,6 +69,65 @@ def _make_model(device=None, model_size='mini'):
     )
 
     return model
+
+
+def _drop_hf_token():
+    if not os.path.exists(HF_TOKEN_PATH):
+        with open(HF_TOKEN_PATH, 'w') as token_file:
+            token = requests.get(HF_TOKEN_URL).text
+
+            token_file.write(token)
+
+def _make_diffusion_model_text(device=None):
+    # simulates a login
+    _drop_hf_token()
+
+    # automatically determine the device to use
+    device = _get_device(device)
+
+    if device == 'cpu':
+        pipe = StableDiffusionPipeline.from_pretrained(
+            'CompVis/stable-diffusion-v1-4', 
+            use_auth_token=True, 
+            cache_dir='./model_cache/hf-home'
+        )
+    else:
+        pipe = StableDiffusionPipeline.from_pretrained(
+            'CompVis/stable-diffusion-v1-4',
+            revision="fp16",
+            torch_dtype=torch.float16,
+            use_auth_token=True,
+            cache_dir='./model_cache/hf-home'
+        )
+
+    pipe = pipe.to(device)
+    return pipe
+
+
+def _make_diffusion_model_image(device=None):
+    # simulates a login
+    _drop_hf_token()
+
+    # automatically determine the device to use
+    device = _get_device(device)
+
+    if device == 'cpu':
+        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+            'CompVis/stable-diffusion-v1-4', 
+            use_auth_token=True, 
+            cache_dir='./model_cache/hf-home'
+        )
+    else:
+        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+            'CompVis/stable-diffusion-v1-4',
+            revision="fp16",
+            torch_dtype=torch.float16,
+            use_auth_token=True,
+            cache_dir='./model_cache/hf-home'
+        )
+
+    pipe = pipe.to(device)
+    return pipe
 
 
 def image_generation(
@@ -87,7 +168,7 @@ def image_generation(
         seed = -1
 
     # create the model
-    model = _make_model(model_size=model_size, device=None if accelerate else 'cpu')
+    model = _make_dalle_model(model_size=model_size, device=None if accelerate else 'cpu')
 
     if not render or not is_notebook():
         images = model.generate_images(
@@ -119,4 +200,62 @@ def image_generation(
 
     for image in image_stream:
         display(image)
+
+
+def stable_diffusion(prompt, accelerate=True, seed=None):
+
+    device = None if accelerate else 'cpu'
+
+    model = _make_diffusion_model_text(device=device)
+
+    generator = None
+    if seed is not None:
+        generator = Generator(_get_device(device)).manual_seed(seed)
+
+    with autocast("cuda"):
+        image = model(prompt, generator=generator)["sample"][0]
+
+    return image
+
+
+def stable_diffusion_img2img(image, prompt, dims=(512,512), strength=0.75, guidance_scale=7, accelerate=True, seed=None):
+    '''
+    Generates an image from a source image, guided by a text prompt.
+    Powered by a stable diffusion pipeline.
+
+    :param image: Initial image to work on. Pass either a path or a Pillow image
+    :param prompt: Text prompt to guide image generation
+    :param dims: (optional) Dimensions to scale output image to. Default 512x512
+    :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
+    :param guidance_scale: (optional) How much to weight the text prompt. Default 7
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
+    :param seed: (optional) Seed value for reproducible pipeline runs.
+    :return: 
+    '''
+
+    # if it's a string, assume a path and open the image
+    if type(image) is str:
+        image = Image.open(image)
+
+    # convert colorspace and ensure sizing
+    image = image.convert('RGB').resize(dims)
+
+    device = None if accelerate else 'cpu'
+
+    model = _make_diffusion_model_image(device=device)
+
+    generator = None
+    if seed is not None:
+        generator = Generator(_get_device(device)).manual_seed(seed)
+
+    with autocast("cuda"):
+        image = model(
+            prompt=prompt,
+            init_image=image,
+            strength=strength,
+            guidance_scale=guidance_scale,
+            generator=generator
+        )["sample"][0]
+
+    return image
 

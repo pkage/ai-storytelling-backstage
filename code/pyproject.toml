@@ -8,6 +8,10 @@ authors = ["Patrick Kage <p.kage@ed.ac.uk>"]
 python = "^3.7"
 transformers = {extras = ["torch"], version = "^4.20.1"}
 min-dalle = "^0.4.4"
+matplotlib = "^3.5.3"
+# pinned from git version because this ISN'T ON PYPI YET!!!
+requests = "^2.28.1"
+diffusers = {git = "https://github.com/huggingface/diffusers"}
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^6.15.0"
