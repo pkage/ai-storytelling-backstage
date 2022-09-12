@@ -89,6 +89,7 @@ def _drop_hf_token():
 
             token_file.write(token)
 
+
 def _make_diffusion_model_text(device=None, unsafe=False):
     # simulates a login
     _drop_hf_token()
@@ -96,25 +97,23 @@ def _make_diffusion_model_text(device=None, unsafe=False):
     # automatically determine the device to use
     device = _get_device(device)
 
-    # safety models
-    safety_checker = StableDiffusionSafetyChecker if not unsafe else StableDiffusionSafetyCheckerDisable
+    # pipeline kwargs
+    kwargs = {
+        'use_auth_token': True,
+        'cache_dir': './model_cache/hf-home'
+    }
 
-    if device == 'cpu':
-        pipe = StableDiffusionPipeline.from_pretrained(
-            'CompVis/stable-diffusion-v1-4', 
-            use_auth_token=True, 
-            cache_dir='./model_cache/hf-home',
-            # safety_checker=safety_checker
-        )
-    else:
-        pipe = StableDiffusionPipeline.from_pretrained(
-            'CompVis/stable-diffusion-v1-4',
-            revision="fp16",
-            torch_dtype=torch.float16,
-            use_auth_token=True,
-            cache_dir='./model_cache/hf-home',
-            # safety_checker=safety_checker
-        )
+    if device != 'cpu':
+        kwargs['revision'] = 'fp16'
+        kwargs['torch_dtype'] = torch.float16
+
+    if unsafe:
+        kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
+
+    pipe = StableDiffusionPipeline.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', 
+        **kwargs
+    )
 
     pipe = pipe.to(device)
     return pipe
@@ -127,25 +126,23 @@ def _make_diffusion_model_image(device=None, unsafe=False):
     # automatically determine the device to use
     device = _get_device(device)
 
-    # safety models
-    safety_checker = StableDiffusionSafetyChecker if not unsafe else StableDiffusionSafetyCheckerDisable
+    # pipeline kwargs
+    kwargs = {
+        'use_auth_token': True,
+        'cache_dir': './model_cache/hf-home'
+    }
 
-    if device == 'cpu':
-        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
-            'CompVis/stable-diffusion-v1-4', 
-            use_auth_token=True, 
-            cache_dir='./model_cache/hf-home'
-            # safety_checker=safety_checker
-        )
-    else:
-        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
-            'CompVis/stable-diffusion-v1-4',
-            revision="fp16",
-            torch_dtype=torch.float16,
-            use_auth_token=True,
-            cache_dir='./model_cache/hf-home'
-            # safety_checker=safety_checker
-        )
+    if device != 'cpu':
+        kwargs['revision'] = 'fp16'
+        kwargs['torch_dtype'] = torch.float16
+
+    if unsafe:
+        kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
+
+    pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', 
+        **kwargs
+    )
 
     pipe = pipe.to(device)
     return pipe
