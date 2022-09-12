@@ -9,15 +9,20 @@ python = "^3.7"
 transformers = {extras = ["torch"], version = "^4.20.1"}
 min-dalle = "^0.4.4"
 matplotlib = "^3.5.3"
-# pinned from git version because this ISN'T ON PYPI YET!!!
 requests = "^2.28.1"
 ftfy = "^6.1.1"
-diffusers = {git = "https://github.com/huggingface/diffusers", rev = "a4d5b59f132126c06c1a6b1f266ee44c70440cce"}
+diffusers = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^6.15.0"
 ipywidgets = "^7.7.1"
 wandb = "^0.12.21"
+
+[[tool.poetry.source]]
+name = "torch_nightly"
+url = "https://download.pytorch.org/whl/nightly/cpu"
+default = false
+secondary = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

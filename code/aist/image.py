@@ -1,19 +1,25 @@
 import os
-import os
+os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
+import platform
 import warnings
 
+from IPython.display import display
+from PIL import Image
+from diffusers import StableDiffusionImg2ImgPipeline, StableDiffusionPipeline
+from diffusers.pipelines.stable_diffusion.safety_checker import (
+    StableDiffusionSafetyChecker,
+)
+from min_dalle import MinDalle
 import requests
 
-from IPython.display import display
-from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline
-from .extras.safety import StableDiffusionSafetyCheckerDisable
-from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker
-from min_dalle import MinDalle
+# import torch with this flag to enable apple silicon fallback acceleration
 import torch
-from PIL import Image
 from torch import Generator, autocast
 
 from .common import is_notebook
+from .extras.safety import StableDiffusionSafetyCheckerDisable
+
+
 
 HF_TOKEN_URL = 'https://cdn.ka.ge/vault/hf_aist.txt'
 HF_TOKEN_LOCATION = os.path.expanduser('~/.huggingface')
@@ -47,11 +53,14 @@ def _get_device(device):
     Figure out which device we should be running stuff on.
 
     :param device: Device to prefer (None for auto)
-    :return: 'cuda' or 'cpu'
+    :return: 'cuda' or 'cpu' or 'mps'
     '''
     if device is None:
         if torch.cuda.is_available():
             return 'cuda'
+        elif platform.machine() == 'arm64' and platform.system() == 'Darwin':
+            # apple silicon acceleration
+            return 'mps'
         else:
             return 'cpu'
 
@@ -68,6 +77,10 @@ def _make_dalle_model(device=None, model_size='mini'):
     # automatically determine the device to use
 
     device = _get_device(device)
+    
+    # patch: mps does not work for dalle
+    if device == 'mps':
+        device = 'cpu'
 
     is_mega = model_size == 'mega'
 
@@ -103,7 +116,7 @@ def _make_diffusion_model_text(device=None, unsafe=False):
         'cache_dir': './model_cache/hf-home'
     }
 
-    if device != 'cpu':
+    if device == 'gpu':
         kwargs['revision'] = 'fp16'
         kwargs['torch_dtype'] = torch.float16
 
@@ -132,7 +145,7 @@ def _make_diffusion_model_image(device=None, unsafe=False):
         'cache_dir': './model_cache/hf-home'
     }
 
-    if device != 'cpu':
+    if device == 'gpu':
         kwargs['revision'] = 'fp16'
         kwargs['torch_dtype'] = torch.float16
 
@@ -238,8 +251,13 @@ def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), unsafe=
 
     model = _make_diffusion_model_text(device=device, unsafe=unsafe)
 
+    device = _get_device(device)
+
     generator = None
     if seed is not None:
+        if device == 'mps':
+            device = 'cpu' # generators are not supported on MPS
+
         generator = Generator(_get_device(device)).manual_seed(seed)
 
     with autocast("cuda"):
@@ -281,9 +299,15 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
 
     model = _make_diffusion_model_image(device=device, unsafe=unsafe)
 
+    device = _get_device(device)
+
     generator = None
     if seed is not None:
+        if device == 'mps':
+            device = 'cpu' # generators are not supported on MPS
+
         generator = Generator(_get_device(device)).manual_seed(seed)
+
 
     with autocast("cuda"):
         image = model(
