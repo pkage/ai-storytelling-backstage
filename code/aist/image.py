@@ -5,19 +5,23 @@ import warnings
 
 from IPython.display import display
 from PIL import Image
+
+# diffusion
 from diffusers import StableDiffusionImg2ImgPipeline, StableDiffusionPipeline
-from diffusers.pipelines.stable_diffusion.safety_checker import (
-    StableDiffusionSafetyChecker,
-)
+from .extras.safety import StableDiffusionSafetyCheckerDisable
+
+# min(dalle)
 from min_dalle import MinDalle
 import requests
+
+# captioning
+from transformers import VisionEncoderDecoderModel, ViTFeatureExtractor, AutoTokenizer
 
 # import torch with this flag to enable apple silicon fallback acceleration
 import torch
 from torch import Generator, autocast
 
 from .common import is_notebook
-from .extras.safety import StableDiffusionSafetyCheckerDisable
 
 
 
@@ -258,7 +262,7 @@ def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), unsafe=
         if device == 'mps':
             device = 'cpu' # generators are not supported on MPS
 
-        generator = Generator(_get_device(device)).manual_seed(seed)
+        generator = Generator(device).manual_seed(seed)
 
     with autocast("cuda"):
         image = model(
@@ -306,7 +310,7 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
         if device == 'mps':
             device = 'cpu' # generators are not supported on MPS
 
-        generator = Generator(_get_device(device)).manual_seed(seed)
+        generator = Generator(device).manual_seed(seed)
 
 
     with autocast("cuda"):
@@ -320,4 +324,5 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
         )["sample"][0]
 
     return image
+
 
