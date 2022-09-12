@@ -120,7 +120,7 @@ def _make_diffusion_model_text(device=None, unsafe=False):
         'cache_dir': './model_cache/hf-home'
     }
 
-    if device == 'gpu':
+    if device == 'cuda':
         kwargs['revision'] = 'fp16'
         kwargs['torch_dtype'] = torch.float16
 
@@ -149,7 +149,7 @@ def _make_diffusion_model_image(device=None, unsafe=False):
         'cache_dir': './model_cache/hf-home'
     }
 
-    if device == 'gpu':
+    if device == 'cuda':
         kwargs['revision'] = 'fp16'
         kwargs['torch_dtype'] = torch.float16
 
