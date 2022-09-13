@@ -36,7 +36,7 @@ def _seed_if_necessary(seed):
 
     :param seed: Seed to set or None or -1
     '''
-    if seed is not None or seed == -1:
+    if seed is not None and seed != -1:
         set_seed(seed)
 
 
