@@ -2,7 +2,7 @@
 
 import os
 from textwrap import dedent
-from .common import is_notebook, is_gpu_available
+from .common import render_output_text, is_gpu_available
 
 # this is nasty but we have to make sure the HF model cache directory is
 # created before we load in the transformers library
@@ -21,7 +21,7 @@ _setup()
 from transformers import pipeline, set_seed # type: ignore
 from transformers.utils.logging import set_verbosity_error
 
-from typing import List, Any
+from typing import List, Any, Optional
 from IPython.display import Markdown, display
 
 
@@ -38,28 +38,6 @@ def _seed_if_necessary(seed):
     '''
     if seed is not None and seed != -1:
         set_seed(seed)
-
-
-def _render_output_text(output: List[str]):
-    '''
-    Attempt to import and render the passed text to an IPython shell via nice
-    markdown rendering.
-
-    Returns the original input (unchanged) if no notebook is detected.
-
-    :param output: model output (text form)
-    :return: either the original output or a transformation into an ipython notebook form
-    '''
-
-    if not is_notebook():
-        return output
-
-    text = ''
-    for i, item in enumerate(output):
-        item = item.replace('\n', '\n\n> ')
-        text += f'Sample {i+1}:\n\n> {item}\n\n' 
-
-    return display(Markdown(text))
 
 
 def _get_pipeline_device(accelerate=True):
@@ -118,7 +96,7 @@ def summarization(
     if not render:
         return results
 
-    return _render_output_text(results)
+    return render_output_text(results)
 
 
 def text_generation(
@@ -180,7 +158,7 @@ def text_generation(
     if not render:
         return results
 
-    return _render_output_text(results)
+    return render_output_text(results)
 
 
 

@@ -3,6 +3,7 @@ os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import platform
 import warnings
 
+from .common import render_output_text
 from IPython.display import display
 from PIL import Image
 
@@ -52,17 +53,18 @@ _setup()
 
 
 
-def _get_device(device):
+def _get_device(device, allow_mps=True):
     '''
     Figure out which device we should be running stuff on.
 
     :param device: Device to prefer (None for auto)
+    :param allow_mps: Flag to manually disable apple silicon acceleration (default True)
     :return: 'cuda' or 'cpu' or 'mps'
     '''
     if device is None:
         if torch.cuda.is_available():
             return 'cuda'
-        elif platform.machine() == 'arm64' and platform.system() == 'Darwin':
+        elif platform.machine() == 'arm64' and platform.system() == 'Darwin' and allow_mps:
             # apple silicon acceleration
             return 'mps'
         else:
@@ -289,7 +291,7 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
     :param guidance_scale: (optional) How much to weight the text prompt. Default 7
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
-    :return: 
+    :return: an image containing
     '''
 
     # if it's a string, assume a path and open the image
@@ -313,7 +315,7 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
         generator = Generator(device).manual_seed(seed)
 
 
-    with autocast("cuda"):
+    with autocast('cuda'):
         image = model(
             prompt=prompt,
             init_image=image,
@@ -321,8 +323,55 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
             strength=strength,
             guidance_scale=guidance_scale,
             generator=generator
-        )["sample"][0]
+        )['sample'][0]
 
     return image
+
+
+
+def image_caption(image, max_length=16, num_beams=4, accelerate=True, render=True):
+    '''
+    Caption an image.
+
+    :param image: Initial image to work on. Pass either a path or a Pillow image
+    :param max_length: (optional) Maximum length of caption. Default 16
+    :param num_beams: (optional) Number of beams for beam search. Default 4
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
+    :param render: (optional) Automatically render results for an ipython notebook 
+                   if one is detected. Default True
+    :return: 
+    '''
+    # if it's a string, assume a path and open the image
+    if type(image) is str:
+        image = Image.open(image)
+
+    # make sure we're working in RGB
+    if image.mode != 'RGB':
+        image = image.convert(mode='RGB')
+
+    # load in from HF
+    model_name = 'nlpconnect/vit-gpt2-image-captioning'
+    feature_extractor = ViTFeatureExtractor.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = VisionEncoderDecoderModel.from_pretrained(model_name)
+
+    # move to accelerator device
+    # MPS (M1/2 platform) is not supported
+    device = torch.device(_get_device(None if accelerate else 'cpu', allow_mps=False))
+    model.to(device)
+
+    # do feature extraction
+    pixel_values = feature_extractor(images=[image], return_tensors='pt').pixel_values
+    pixel_values = pixel_values.to(device)
+
+    output_ids = model.generate(pixel_values, max_length=max_length, num_beams=num_beams)
+
+    preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)
+    preds = [pred.strip() for pred in preds]
+
+    if not render:
+        return preds
+
+    return render_output_text(preds)
 
 
