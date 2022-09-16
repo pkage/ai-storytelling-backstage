@@ -9,7 +9,7 @@ from IPython.display import display
 from PIL import Image
 
 # diffusion
-from diffusers import StableDiffusionImg2ImgPipeline, StableDiffusionPipeline
+from diffusers import StableDiffusionImg2ImgPipeline, StableDiffusionPipeline, StableDiffusionInpaintPipeline
 from .extras.safety import StableDiffusionSafetyCheckerDisable
 
 # min(dalle)
@@ -160,6 +160,35 @@ def _make_diffusion_model_image(device: Optional[str] = None, unsafe: bool = Fal
         kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
 
     pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+        'CompVis/stable-diffusion-v1-4', 
+        **kwargs
+    )
+
+    pipe = pipe.to(device)
+    return pipe
+
+
+def _make_diffusion_model_inpaint(device: Optional[str] = None, unsafe: bool = False):
+    # simulates a login
+    _drop_hf_token()
+
+    # automatically determine the device to use
+    device = _get_device(device)
+
+    # pipeline kwargs
+    kwargs = {
+        'use_auth_token': True,
+        'cache_dir': './model_cache/hf-home'
+    }
+
+    if device == 'cuda':
+        kwargs['revision'] = 'fp16'
+        kwargs['torch_dtype'] = torch.float16
+
+    if unsafe:
+        kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
+
+    pipe = StableDiffusionInpaintPipeline.from_pretrained(
         'CompVis/stable-diffusion-v1-4', 
         **kwargs
     )
@@ -337,6 +366,60 @@ def stable_diffusion_img2img(
         image = model(
             prompt=prompt,
             init_image=image,
+            num_inference_steps=rounds,
+            strength=strength,
+            guidance_scale=guidance_scale,
+            generator=generator
+        )['sample'][0]
+
+    return image
+
+def stable_diffusion_inpaint(
+        image: Union[str, Image.Image],
+        mask_image: Union[str, Image.Image],
+        prompt: str,
+        dims: Tuple[int, int] = (512,512),
+        rounds: int = 50,
+        strength: float = 0.75,
+        guidance_scale: float = 7,
+        unsafe: bool = False,
+        accelerate: bool = True,
+        seed: Optional[int] = None
+    ):
+
+    # if it's a string, assume a path and open the image
+    if type(image) is str:
+        image = Image.open(image)
+
+    # convert colorspace and ensure sizing
+    image = image.convert('RGB').resize(dims)
+
+    # do it again for the mask
+    if type(mask_image) is str:
+        mask_image = Image.open(mask_image)
+
+    # convert colorspace and ensure sizing
+    mask_image = mask_image.convert('RGB').resize(dims)
+
+    device = None if accelerate else 'cpu'
+
+    model = _make_diffusion_model_inpaint(device=device, unsafe=unsafe)
+
+    device = _get_device(device)
+
+    generator = None
+    if seed is not None:
+        if device == 'mps':
+            device = 'cpu' # generators are not supported on MPS
+
+        generator = Generator(device).manual_seed(seed)
+
+
+    with autocast('cuda'):
+        image = model(
+            prompt=prompt,
+            init_image=image,
+            mask_image=mask_image,
             num_inference_steps=rounds,
             strength=strength,
             guidance_scale=guidance_scale,
