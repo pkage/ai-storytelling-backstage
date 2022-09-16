@@ -29,7 +29,7 @@ from IPython.display import Markdown, display
 set_verbosity_error()
 
 
-def _seed_if_necessary(seed):
+def _seed_if_necessary(seed: Optional[int]):
     '''
     Quick function that sets the seed if it's passed. If not provided,
     no seed will be explicitly set
@@ -40,7 +40,7 @@ def _seed_if_necessary(seed):
         set_seed(seed)
 
 
-def _get_pipeline_device(accelerate=True):
+def _get_pipeline_device(accelerate: bool = True):
     '''
     Determine CUDA device to use.
 
@@ -54,14 +54,14 @@ def _get_pipeline_device(accelerate=True):
 
 
 def summarization(
-        text,
-        model='facebook/bart-large-cnn',
-        max_length=130,
-        min_length=30,
-        do_sample=False,
-        accelerate=True,
-        seed=None,
-        render=True
+        text: str,
+        model: str ='facebook/bart-large-cnn',
+        max_length: int =130,
+        min_length: int =30,
+        do_sample: bool = False,
+        accelerate: bool = True,
+        seed: Optional[int] = None,
+        render: bool = True
     ):
     '''
     Summarize text from a prompt.
@@ -100,13 +100,13 @@ def summarization(
 
 
 def text_generation(
-        prompt, 
-        max_length=200,
-        num_return_sequences=3,
-        model='small',
-        seed=None,
-        accelerate=True,
-        render=True
+        prompt: str, 
+        max_length: int = 200,
+        num_return_sequences: int = 3,
+        model: str ='small',
+        seed: Optional[int] =None,
+        accelerate: bool = True,
+        render: bool = True
     ):
     '''
     Generate text from a prompt.
@@ -163,11 +163,11 @@ def text_generation(
 
 
 def sentiment_analysis(
-        text,
-        model='distilbert-base-uncased-finetuned-sst-2-english',
-        accelerate=True,
-        seed=None,
-        render=True
+        text: str,
+        model: str = 'distilbert-base-uncased-finetuned-sst-2-english',
+        accelerate: bool = True,
+        seed: Optional[int] = None,
+        render: bool =True
     ):
     '''
     Analyze the sentiment of a particular piece of text.
@@ -195,11 +195,11 @@ def sentiment_analysis(
 
 
 def mask_filling(
-        text,
-        model='bert-base-uncased',
-        accelerate=True,
-        seed=None,
-        render=True
+        text: str,
+        model: str = 'bert-base-uncased',
+        accelerate: bool = True,
+        seed: Optional[int] = None,
+        render: bool = True
     ):
     '''
     Guess words that fill a specific slot in some text. The default mask token is [MASK].
@@ -235,12 +235,12 @@ def mask_filling(
 
 
 def question_answering(
-        question,
-        context,
-        model='deepset/roberta-base-squad2',
-        accelerate=True,
-        seed=None,
-        render=True
+        question: str,
+        context: str,
+        model: str = 'deepset/roberta-base-squad2',
+        accelerate: bool = True,
+        seed: Optional[int] = None,
+        render: bool =True
     ):
     '''
     Answer a question about some given context.

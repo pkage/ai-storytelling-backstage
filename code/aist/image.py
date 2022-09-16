@@ -2,6 +2,7 @@ import os
 os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import platform
 import warnings
+from typing import Optional, Tuple, Union
 
 from .common import render_output_text
 from IPython.display import display
@@ -53,7 +54,7 @@ _setup()
 
 
 
-def _get_device(device, allow_mps=True):
+def _get_device(device: Optional[str], allow_mps: bool = True):
     '''
     Figure out which device we should be running stuff on.
 
@@ -72,7 +73,7 @@ def _get_device(device, allow_mps=True):
 
 
 
-def _make_dalle_model(device=None, model_size='mini'):
+def _make_dalle_model(device: Optional[str] = None, model_size: str = 'mini'):
     '''
     Create a dalle model.
 
@@ -109,7 +110,7 @@ def _drop_hf_token():
             token_file.write(token)
 
 
-def _make_diffusion_model_text(device=None, unsafe=False):
+def _make_diffusion_model_text(device: Optional[str] = None, unsafe: bool = False):
     # simulates a login
     _drop_hf_token()
 
@@ -138,7 +139,7 @@ def _make_diffusion_model_text(device=None, unsafe=False):
     return pipe
 
 
-def _make_diffusion_model_image(device=None, unsafe=False):
+def _make_diffusion_model_image(device: Optional[str] = None, unsafe: bool = False):
     # simulates a login
     _drop_hf_token()
 
@@ -168,14 +169,14 @@ def _make_diffusion_model_image(device=None, unsafe=False):
 
 
 def image_generation(
-        prompt,
-        grid_size=2,
-        model_size='mini',
-        temperature=1,
-        show_in_progress=False,
-        accelerate=True,
-        render=True,
-        seed=None
+        prompt: str,
+        grid_size: int = 2,
+        model_size: str = 'mini',
+        temperature: float = 1,
+        show_in_progress: bool = False,
+        accelerate: bool = True,
+        render: bool = True,
+        seed: Optional[int] = None
     ):
     '''
     Generate a grid of images from a prompt.
@@ -239,7 +240,14 @@ def image_generation(
         display(image)
 
 
-def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), unsafe=False, seed=None):
+def stable_diffusion(
+        prompt: str,
+        accelerate: bool = True,
+        rounds: int = 50,
+        dims: Tuple[int, int] = (512,512),
+        unsafe=False,
+        seed=None
+    ):
     '''
     Generates an image from a text prompt.
     Powered by a stable diffusion pipeline.
@@ -278,7 +286,17 @@ def stable_diffusion(prompt, accelerate=True, rounds=50, dims=(512,512), unsafe=
     return image
 
 
-def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=0.75, guidance_scale=7, unsafe=False, accelerate=True, seed=None):
+def stable_diffusion_img2img(
+        image: Union[str, Image.Image],
+        prompt: str,
+        dims: Tuple[int, int] = (512,512),
+        rounds: int = 50,
+        strength: float = 0.75,
+        guidance_scale: float = 7,
+        unsafe: bool = False,
+        accelerate: bool = True,
+        seed: Optional[int] = None
+    ):
     '''
     Generates an image from a source image, guided by a text prompt.
     Powered by a stable diffusion pipeline.
@@ -328,8 +346,13 @@ def stable_diffusion_img2img(image, prompt, dims=(512,512), rounds=50, strength=
     return image
 
 
-
-def image_caption(image, max_length=16, num_beams=4, accelerate=True, render=True):
+def image_caption(
+        image: Union[str, Image.Image],
+        max_length: int = 16,
+        num_beams: int = 4,
+        accelerate: bool = True,
+        render: bool = True
+    ):
     '''
     Caption an image.
 
