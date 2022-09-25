@@ -2,8 +2,7 @@
 
 ## what?
 
-This repository contains all the backstage information for the AI and
-Storytelling course.
+This repository contains all the backstage information for the [AI and Storytelling](https://kage.dev/ai-storytelling-backstage/) course.
 
 __Please note this is all subject to change__
 
@@ -43,4 +42,4 @@ Then, you can start Jupyter in that directory:
 $ jupyter lab
 ```
 
-See `code/Demo.ipynb` for some examples.
+See the colabs linked from the [course website](https://kage.dev/ai-storytelling-backstage/) for some examples.
