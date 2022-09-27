@@ -173,7 +173,7 @@ def sentiment_analysis(
     Analyze the sentiment of a particular piece of text.
 
     :param text: The text to analyze.
-    :param model: (optional) The model to use for analysis.
+    :param model: (optional) The model to use for analysis. (default 'distilbert-base-uncased-finetuned-sst-2-english')
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
@@ -205,7 +205,7 @@ def mask_filling(
     Guess words that fill a specific slot in some text. The default mask token is [MASK].
 
     :param text: The text to fill, with the mask token in it.
-    :param model: (optional) The model to use.
+    :param model: (optional) The model to use. (default 'bert-base-uncased')
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
@@ -247,7 +247,7 @@ def question_answering(
 
     :param question: The question to answer from the data.
     :param context: The context from which to draw the answer.
-    :param model: (optional) The model to use.
+    :param model: (optional) The model to use. (default 'deepset/roberta-base-squad2')
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :param render: (optional) Automatically render results for an ipython notebook 
