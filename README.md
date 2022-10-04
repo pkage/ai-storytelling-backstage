@@ -2,9 +2,27 @@
 
 ## what?
 
-This repository contains all the backstage information for the [AI and Storytelling](https://kage.dev/ai-storytelling-backstage/) course.
+This repository contains all the backstage information for the [AI and
+Storytelling](https://kage.dev/ai-storytelling-backstage/) course, including
+workshop sources and the `aist` wrapper library.
 
-__Please note this is all subject to change__
+If you wish to use this project in your own work, please cite it with:
+
+```bibtex
+@misc{andreadiskage_artificial_2022,
+    title = {Artificial {{Intelligence}} and {{Storytelling}}},
+    shorttitle = {{{AIST}}},
+    author = {Andreadis, Pavlos and Kage, Patrick},
+    year = {2022},
+    month = oct,
+    abstract = {
+        A series of packages for easily and reproducibly running pre-trained
+            image and text generation and manipulation models.
+    },
+    copyright = {MIT License},
+    howpublished = {The University of Edinburgh}
+}
+```
 
 ## how?
 
