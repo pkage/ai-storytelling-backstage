@@ -26,6 +26,8 @@ from torch import Generator, autocast
 from .common import is_notebook
 
 
+from pprint import pprint
+
 
 HF_TOKEN_URL = 'https://cdn.ka.ge/vault/hf_aist.txt'
 HF_TOKEN_LOCATION = os.path.expanduser('~/.huggingface')
@@ -310,7 +312,8 @@ def stable_diffusion(
             height=dims[1],
             width=dims[0],
             generator=generator
-        )["sample"][0]
+        ).images[0]
+
 
     return image
 
@@ -370,7 +373,7 @@ def stable_diffusion_img2img(
             strength=strength,
             guidance_scale=guidance_scale,
             generator=generator
-        )['sample'][0]
+        ).images[0]
 
     return image
 
@@ -424,7 +427,7 @@ def stable_diffusion_inpaint(
             strength=strength,
             guidance_scale=guidance_scale,
             generator=generator
-        )['sample'][0]
+        ).images[0]
 
     return image
 
