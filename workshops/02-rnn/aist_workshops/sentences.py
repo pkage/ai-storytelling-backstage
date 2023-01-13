@@ -46,8 +46,6 @@ class SentenceEncoder:
     def _decode_word(self, vector):
         nonzero = (vector != 0).argmax()
 
-        print(nonzero)
-        print(len(vector))
         if nonzero+1 == len(vector):
             word = '(end)'
             return word
