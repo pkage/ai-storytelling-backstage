@@ -53,12 +53,14 @@ class SentenceEncoder:
         return word
 
 
-    def encode(self, sentence):
+    def encode(self, sentence, noisy=True):
         doc = nlp(sentence)
-
         out = []
         for token in doc:
-            out.append(self._encode_word(token.lemma_))
+            encoded = self._encode_word(token.lemma_)
+            if noisy:
+                print(f'{encoded} -> ({token.lemma_})')
+            out.append(encoded)
         
         out.append(self._encode_word(None, eol=True))
 
