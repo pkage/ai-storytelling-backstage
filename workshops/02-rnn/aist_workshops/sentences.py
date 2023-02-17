@@ -66,6 +66,15 @@ class SentenceEncoder:
 
         return out
 
+    def show_encoded(self, encoded):
+        for line in encoded:
+            for el in line:
+                if el == 1:
+                    print('🟩', end='')
+                else:
+                    print('⬜️', end='')
+            print(f' -> {self._decode_word(line)}')
+
 
     def decode(self, vectors):
         out = []
