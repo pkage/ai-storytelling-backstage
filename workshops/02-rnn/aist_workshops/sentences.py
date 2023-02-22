@@ -63,7 +63,7 @@ class SentenceEncoder:
         return word
 
 
-    def encode(self, sentence, similarity=True, noisy=False):
+    def encode(self, sentence, similarity=False, noisy=False):
         doc = nlp(sentence)
         out = []
         for token in doc:
@@ -87,7 +87,7 @@ class SentenceEncoder:
             print(f' -> {self._decode_word(line)}')
 
 
-    def decode(self, vectors, similarity=True):
+    def decode(self, vectors, similarity=False):
         out = []
         for vector in vectors:
             word = self._decode_word(vector, similarity=similarity)
