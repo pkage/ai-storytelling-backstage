@@ -1,0 +1,10 @@
+version: '3'
+services:
+    moderation:
+        build: .
+        env_file:
+            - .env
+        environment:
+            - APP_PORT=8000
+        ports:
+            - "8000:8000"
