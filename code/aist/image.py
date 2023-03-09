@@ -148,7 +148,7 @@ def _make_diffusion_model_text(
 def _make_diffusion_model_image(
         device: Optional[str] = None,
         unsafe: bool = False,
-        model: str = 'CompVis/stable-diffusion-v1.4'
+        model: str = 'CompVis/stable-diffusion-v1-4'
     ):
     # simulates a login
     _drop_hf_token()
@@ -181,7 +181,7 @@ def _make_diffusion_model_image(
 def _make_diffusion_model_inpaint(
         device: Optional[str] = None,
         unsafe: bool = False,
-        model: str = 'CompVis/stable-diffusion-v1.4'
+        model: str = 'CompVis/stable-diffusion-v1-4'
     ):
     # simulates a login
     _drop_hf_token()
@@ -289,7 +289,7 @@ def stable_diffusion(
         rounds: int = 50,
         dims: Tuple[int, int] = (512,512),
         unsafe=False,
-        model='CompVis/stable-diffusion-v1.4',
+        model='CompVis/stable-diffusion-v1-4',
         seed=None
     ):
     '''
@@ -340,7 +340,7 @@ def stable_diffusion_img2img(
         guidance_scale: float = 7,
         unsafe: bool = False,
         accelerate: bool = True,
-        model='CompVis/stable-diffusion-v1.4',
+        model='CompVis/stable-diffusion-v1-4',
         seed: Optional[int] = None
     ):
     '''
@@ -354,7 +354,7 @@ def stable_diffusion_img2img(
     :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
     :param guidance_scale: (optional) How much to weight the text prompt. Default 7
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
-    :param model: (optional) Model to use, defaults to CompVis/stable-diffusion-v1.4
+    :param model: (optional) Model to use, defaults to CompVis/stable-diffusion-v1-4
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :return: an image containing
     '''
@@ -402,7 +402,7 @@ def stable_diffusion_inpaint(
         guidance_scale: float = 7,
         unsafe: bool = False,
         accelerate: bool = True,
-        model='CompVis/stable-diffusion-v1.4',
+        model='CompVis/stable-diffusion-v1-4',
         seed: Optional[int] = None
     ):
     '''
@@ -416,7 +416,7 @@ def stable_diffusion_inpaint(
     :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
     :param guidance_scale: (optional) How much to weight the text prompt. Default 7
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
-    :param model: (optional) Model to use, defaults to CompVis/stable-diffusion-v1.4
+    :param model: (optional) Model to use, defaults to CompVis/stable-diffusion-v1-4
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :return: an image containing
     '''
