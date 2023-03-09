@@ -112,7 +112,11 @@ def _drop_hf_token():
             token_file.write(token)
 
 
-def _make_diffusion_model_text(device: Optional[str] = None, unsafe: bool = False):
+def _make_diffusion_model_text(
+        device: Optional[str] = None,
+        unsafe: bool = False,
+        model: str = 'CompVis/stable-diffusion-v1-4'
+    ):
     # simulates a login
     _drop_hf_token()
 
@@ -133,7 +137,7 @@ def _make_diffusion_model_text(device: Optional[str] = None, unsafe: bool = Fals
         kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
 
     pipe = StableDiffusionPipeline.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', 
+        model,
         **kwargs
     )
 
@@ -141,7 +145,11 @@ def _make_diffusion_model_text(device: Optional[str] = None, unsafe: bool = Fals
     return pipe
 
 
-def _make_diffusion_model_image(device: Optional[str] = None, unsafe: bool = False):
+def _make_diffusion_model_image(
+        device: Optional[str] = None,
+        unsafe: bool = False,
+        model: str = 'CompVis/stable-diffusion-v1.4'
+    ):
     # simulates a login
     _drop_hf_token()
 
@@ -162,7 +170,7 @@ def _make_diffusion_model_image(device: Optional[str] = None, unsafe: bool = Fal
         kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
 
     pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', 
+        model,
         **kwargs
     )
 
@@ -170,7 +178,11 @@ def _make_diffusion_model_image(device: Optional[str] = None, unsafe: bool = Fal
     return pipe
 
 
-def _make_diffusion_model_inpaint(device: Optional[str] = None, unsafe: bool = False):
+def _make_diffusion_model_inpaint(
+        device: Optional[str] = None,
+        unsafe: bool = False,
+        model: str = 'CompVis/stable-diffusion-v1.4'
+    ):
     # simulates a login
     _drop_hf_token()
 
@@ -191,7 +203,7 @@ def _make_diffusion_model_inpaint(device: Optional[str] = None, unsafe: bool = F
         kwargs['safety_checker'] = StableDiffusionSafetyCheckerDisable
 
     pipe = StableDiffusionInpaintPipeline.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', 
+        model,
         **kwargs
     )
 
@@ -277,6 +289,7 @@ def stable_diffusion(
         rounds: int = 50,
         dims: Tuple[int, int] = (512,512),
         unsafe=False,
+        model='CompVis/stable-diffusion-v1.4',
         seed=None
     ):
     '''
@@ -294,7 +307,7 @@ def stable_diffusion(
 
     device = None if accelerate else 'cpu'
 
-    model = _make_diffusion_model_text(device=device, unsafe=unsafe)
+    model = _make_diffusion_model_text(device=device, unsafe=unsafe, model=model)
 
     device = _get_device(device)
 
@@ -327,6 +340,7 @@ def stable_diffusion_img2img(
         guidance_scale: float = 7,
         unsafe: bool = False,
         accelerate: bool = True,
+        model='CompVis/stable-diffusion-v1.4',
         seed: Optional[int] = None
     ):
     '''
@@ -340,6 +354,7 @@ def stable_diffusion_img2img(
     :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
     :param guidance_scale: (optional) How much to weight the text prompt. Default 7
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
+    :param model: (optional) Model to use, defaults to CompVis/stable-diffusion-v1.4
     :param seed: (optional) Seed value for reproducible pipeline runs.
     :return: an image containing
     '''
@@ -353,7 +368,7 @@ def stable_diffusion_img2img(
 
     device = None if accelerate else 'cpu'
 
-    model = _make_diffusion_model_image(device=device, unsafe=unsafe)
+    model = _make_diffusion_model_image(device=device, unsafe=unsafe, model=model)
 
     device = _get_device(device)
 
@@ -387,8 +402,24 @@ def stable_diffusion_inpaint(
         guidance_scale: float = 7,
         unsafe: bool = False,
         accelerate: bool = True,
+        model='CompVis/stable-diffusion-v1.4',
         seed: Optional[int] = None
     ):
+    '''
+    Generates an image from a source image, guided by a text prompt.
+    Powered by a stable diffusion pipeline.
+
+    :param image: Initial image to work on. Pass either a path or a Pillow image
+    :param prompt: Text prompt to guide image generation
+    :param rounds: (optional) How many inference rounds to do. More rounds yields more coherent results. Default 50
+    :param dims: (optional) Dimensions to scale output image to. Default 512x512
+    :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
+    :param guidance_scale: (optional) How much to weight the text prompt. Default 7
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
+    :param model: (optional) Model to use, defaults to CompVis/stable-diffusion-v1.4
+    :param seed: (optional) Seed value for reproducible pipeline runs.
+    :return: an image containing
+    '''
 
     # if it's a string, assume a path and open the image
     if type(image) is str:
@@ -406,7 +437,7 @@ def stable_diffusion_inpaint(
 
     device = None if accelerate else 'cpu'
 
-    model = _make_diffusion_model_inpaint(device=device, unsafe=unsafe)
+    model = _make_diffusion_model_inpaint(device=device, unsafe=unsafe, model=model)
 
     device = _get_device(device)
 
