@@ -458,14 +458,14 @@ files = [
 
 [[package]]
 name = "diffusers"
-version = "0.14.0"
+version = "0.11.1"
 description = "Diffusers"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "diffusers-0.14.0-py3-none-any.whl", hash = "sha256:2fcba252ce33a00afcc9de74bf08c56e696ea9e9dcc21825bd8dfca941b7fa04"},
-    {file = "diffusers-0.14.0.tar.gz", hash = "sha256:b2a42a12dab538cb45a3b0c65503053ba446e5f2df4836de385b5238df830a46"},
+    {file = "diffusers-0.11.1-py3-none-any.whl", hash = "sha256:5b3f0d113d369cb675d292c3dffb35d0bac96af095727b5380ca3d48eb0e3e94"},
+    {file = "diffusers-0.11.1.tar.gz", hash = "sha256:32684204134a0fd5f5a2cb7d71bbd2f9f8c79128c98e1af42dd8922f30a00109"},
 ]
 
 [package.dependencies]
@@ -478,13 +478,13 @@ regex = "!=2019.12.17"
 requests = "*"
 
 [package.extras]
-dev = ["Jinja2", "accelerate (>=0.11.0)", "black (>=23.1,<24.0)", "datasets", "flax (>=0.4.1)", "hf-doc-builder (>=0.3.0)", "isort (>=5.5.4)", "jax (>=0.2.8,!=0.3.2)", "jaxlib (>=0.1.65)", "k-diffusion (>=0.0.12)", "librosa", "parameterized", "pytest", "pytest-timeout", "pytest-xdist", "ruff (>=0.0.241)", "safetensors", "scipy", "sentencepiece (>=0.1.91,!=0.1.92)", "tensorboard", "torch (>=1.4)", "torchvision", "transformers (>=4.25.1)"]
+dev = ["accelerate (>=0.11.0)", "black (==22.8)", "datasets", "flake8 (>=3.8.3)", "flax (>=0.4.1)", "hf-doc-builder (>=0.3.0)", "isort (>=5.5.4)", "jax (>=0.2.8,!=0.3.2)", "jaxlib (>=0.1.65)", "k-diffusion", "librosa", "modelcards (>=0.1.4)", "parameterized", "pytest", "pytest-timeout", "pytest-xdist", "safetensors", "scipy", "sentencepiece (>=0.1.91,!=0.1.92)", "tensorboard", "torch (>=1.4)", "torchvision", "transformers (>=4.25.1)"]
 docs = ["hf-doc-builder (>=0.3.0)"]
 flax = ["flax (>=0.4.1)", "jax (>=0.2.8,!=0.3.2)", "jaxlib (>=0.1.65)"]
-quality = ["black (>=23.1,<24.0)", "hf-doc-builder (>=0.3.0)", "isort (>=5.5.4)", "ruff (>=0.0.241)"]
-test = ["Jinja2", "datasets", "k-diffusion (>=0.0.12)", "librosa", "parameterized", "pytest", "pytest-timeout", "pytest-xdist", "safetensors", "scipy", "sentencepiece (>=0.1.91,!=0.1.92)", "torchvision", "transformers (>=4.25.1)"]
+quality = ["black (==22.8)", "flake8 (>=3.8.3)", "hf-doc-builder (>=0.3.0)", "isort (>=5.5.4)"]
+test = ["datasets", "k-diffusion", "librosa", "parameterized", "pytest", "pytest-timeout", "pytest-xdist", "safetensors", "scipy", "sentencepiece (>=0.1.91,!=0.1.92)", "torchvision", "transformers (>=4.25.1)"]
 torch = ["accelerate (>=0.11.0)", "torch (>=1.4)"]
-training = ["Jinja2", "accelerate (>=0.11.0)", "datasets", "tensorboard"]
+training = ["accelerate (>=0.11.0)", "datasets", "modelcards (>=0.1.4)", "tensorboard"]
 
 [[package]]
 name = "docker-pycreds"
@@ -2847,4 +2847,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "84d40e5f6f1ee2e4b121876307f6f753adb6d5bd6d510e284fea0576adf75fa4"
+content-hash = "0e50e311eadc8cf3db805186d6a9d71f9ef31a085ac6d45ab54c547ff3f2c930"
