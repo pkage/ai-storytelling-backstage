@@ -125,8 +125,8 @@ def _make_diffusion_model_text(
 
     # pipeline kwargs
     kwargs = {
-        'use_auth_token': True,
-        'cache_dir': './model_cache/hf-home'
+        'use_auth_token': True
+        # 'cache_dir': './model_cache/hf-home'
     }
 
     if device == 'cuda':
@@ -159,7 +159,7 @@ def _make_diffusion_model_image(
     # pipeline kwargs
     kwargs = {
         'use_auth_token': True,
-        'cache_dir': './model_cache/hf-home'
+        # 'cache_dir': './model_cache/hf-home'
     }
 
     if device == 'cuda':
@@ -192,7 +192,7 @@ def _make_diffusion_model_inpaint(
     # pipeline kwargs
     kwargs = {
         'use_auth_token': True,
-        'cache_dir': './model_cache/hf-home'
+        # 'cache_dir': './model_cache/hf-home'
     }
 
     if device == 'cuda':
