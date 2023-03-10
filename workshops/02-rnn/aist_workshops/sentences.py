@@ -27,8 +27,16 @@ class SentenceEncoder:
             self.reverse_mapping[i+1] = token.lemma_
 
 
-    def lemmatize(self, word):
-        doc = nlp(word)
+    def lemmatize(self, sentence):
+        '''
+        Tokenize and lemmatize a sentence
+
+        :param sentence: A sentence
+        :type sentence: str
+        :return: Lemmas for every token
+        :rtype: List[str]
+        '''
+        doc = nlp(sentence)
         
         out = []
         for i, token in enumerate(doc):
@@ -38,6 +46,19 @@ class SentenceEncoder:
 
 
     def _encode_word(self, lemma, eol=False, similarity=True):
+        '''
+        Encode a word with the encoding map
+
+        :param lemma: A sentence
+        :type lemma: str
+        :param eol: whether or not this should be an EOL token
+        :type eol: bool
+        :param similarity: whether or not to use the spacy similarity
+        :type similarity: bool
+        :return: Encoding distribution
+        :rtype: np.array(dtype=float)
+        '''
+
         encoding = np.zeros(len(self.mapping)+2)
 
         if eol:
@@ -56,6 +77,16 @@ class SentenceEncoder:
 
 
     def _decode_word(self, vector, similarity=True):
+        '''
+        Decode a word with the encoding map
+
+        :param vector: A sentence
+        :type vector: np.array(dtype=float)
+        :param similarity: whether or not to use the spacy similarity
+        :type similarity: bool
+        :return: word
+        :rtype: str
+        '''
         if similarity:
             vector = (vector == 1)
         nonzero = vector.argmax()
@@ -67,7 +98,20 @@ class SentenceEncoder:
         return word
 
 
+
     def encode(self, sentence, similarity=False, noisy=False):
+        '''
+        Encode a sentence with the encoding map
+
+        :param sentence: A sentence
+        :type sentence: str
+        :param similarity: whether or not to use the spacy similarity
+        :type similarity: bool
+        :param noisy: whether or not to print to the terminal
+        :type noisy: bool
+        :return: List of encoding distributions
+        :rtype: List[np.array(dtype=float)]
+        '''
         doc = nlp(sentence)
         out = []
         for token in doc:
@@ -82,6 +126,12 @@ class SentenceEncoder:
 
 
     def show_encoded(self, encoded):
+        '''
+        Show the encoding information as emoji
+
+        :param encoded: Encoding distribution
+        :type encoded: List[np.array(dtype=float)]
+        '''
         for line in encoded:
             for el in line:
                 if el == 1:
@@ -92,6 +142,16 @@ class SentenceEncoder:
 
 
     def decode(self, vectors, similarity=False):
+        '''
+        Decode a string with the decoding map
+
+        :param vectors: List of encoding distributions
+        :type vectors: List[np.array(dtype=float)]
+        :param similarity: whether or not to use the spacy similarity
+        :type similarity: bool
+        :return: A decoded sentence
+        :rtype: List[str]
+        '''
         out = []
         for vector in vectors:
             word = self._decode_word(vector, similarity=similarity)
