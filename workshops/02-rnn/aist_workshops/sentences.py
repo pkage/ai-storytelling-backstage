@@ -15,6 +15,10 @@ class SentenceEncoder:
 
         
         '''
+        self.mapping = {}
+        self.reverse_mapping = {
+            0: ''
+        }
         doc = nlp(word_list)
         
         for i, token in enumerate(doc):
