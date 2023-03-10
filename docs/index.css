@@ -105,6 +105,34 @@ a.linkbox:active {
     /* display: none; */
 }
 
+.images {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 3em;
+}
+
+.images img {
+    height: 128px;
+    width: auto;
+}
+
+.columns {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+}
+.columns > .column {
+    flex-grow: 1;
+}
+
+.is-two-thirds {
+    flex-grow: 2 !important;
+}
+
 @media (min-width: 768px) {
     main {
         margin-left: calc(50vw - (var(--main-width) / 2));
