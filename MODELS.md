@@ -33,7 +33,7 @@ _GPT-2 deriviatives:_
 
 - [GPT2](https://huggingface.co/gpt2) from OpenAI
 - [DistilGPT2](https://huggingface.co/distilgpt2) from Hugging Face (distilled from GPT2)
-- [GPT-J-6B](https://huggingface.co/EleutherAI/gpt-j-6B) from EleutherAI (⭐️ i like this one)
+- [GPT2-Large](https://huggingface.co/gpt2-large) from OpenAI (⭐️ i like this one)
 
 _Open Pre-trained Transformers (OPT) model family:_
 
@@ -42,20 +42,13 @@ _Open Pre-trained Transformers (OPT) model family:_
 
 [See more sizes here](https://huggingface.co/models?arxiv=arxiv:2205.01068)
 
-Fills in masked tokens:
-(`hello, i am a [MASK] model` → `hello, i am a role model`):
+Fills in masked tokens (`hello, i am a [MASK] model` → `hello, i am a role model`):
 
 - [bert-base-uncased](https://huggingface.co/bert-base-uncased)
 
 Summarization:
 
 - [bart-large-cnn](https://huggingface.co/facebook/bart-large-cnn)
-
-Translation:
-
-- [m2m100_418M](https://huggingface.co/facebook/m2m100_418M) from FB
-- [mt5](https://huggingface.co/google/mt5-base) from Google
-
 
 Question answering:
 
@@ -65,30 +58,15 @@ Question answering:
 
 ### Text → Image
 
-_it's tricky to find pre-existing models for this space as they're not tagged. we can always make our own_
-
 Image generation from text prompt:
 
-- [dalle-mini](https://huggingface.co/dalle-mini/dalle-mini) minimization of OpenAI's DallE. Big on the internet!
-- [BigGAN-deep-128](https://huggingface.co/osanseviero/BigGAN-deep-128) only works with imagenet inputs
+- [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4) is the main one.
+- [dalle-mini](https://huggingface.co/dalle-mini/dalle-mini) minimization of OpenAI's Dall-E model.
+
+We mainly focus on stable diffusion. We also use stable diffusion to provide inpainting and image-to-image transformations.
 
 ### Image → Text
 
-_it's tricky to find pre-existing models for this space as they're not tagged. we can always make our own_
+Captioning images:
 
-Optical character recognition:
-
-- [manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) OCR for Manga
-- [trocr](https://huggingface.co/microsoft/trocr-base-printed) OCR from Microsoft
-
-### Image → Image
-
-_it's tricky to find pre-existing models for this space as they're not tagged. we can always make our own_
-
-Style-transfer:
-
-- [tf-neural-style-transfer](https://huggingface.co/Shamima/tf-neural-style-transfer)
-
-### Recommender systems
-
-- [recommender transformers](https://huggingface.co/keras-io/recommender-transformers)
+- [ViT-GPT2 Image Captioning](https://huggingface.co/nlpconnect/vit-gpt2-image-captioning)
