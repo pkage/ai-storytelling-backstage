@@ -285,6 +285,7 @@ def image_generation(
 
 def stable_diffusion(
         prompt: str,
+        negative_prompt: Optional[str] = None,
         accelerate: bool = True,
         rounds: int = 50,
         dims: Tuple[int, int] = (512,512),
@@ -297,6 +298,7 @@ def stable_diffusion(
     Powered by a stable diffusion pipeline.
 
     :param prompt: Text prompt to guide image generation
+    :param negative_prompt: (optional) Negative text prompt to guide image generation
     :param rounds: (optional) How many inference rounds to do. More rounds yields more coherent results. Default 50
     :param dims: (optional) Dimensions of image to create. Default 512x512
     :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
@@ -321,6 +323,7 @@ def stable_diffusion(
     with autocast("cuda"):
         image = model(
             prompt,
+            negative_prompt=negative_prompt,
             num_inference_steps=rounds,
             height=dims[1],
             width=dims[0],
@@ -334,6 +337,7 @@ def stable_diffusion(
 def stable_diffusion_img2img(
         image: Union[str, Image.Image],
         prompt: str,
+        negative_prompt: Optional[str] = None,
         dims: Tuple[int, int] = (512,512),
         rounds: int = 50,
         strength: float = 0.75,
@@ -349,6 +353,7 @@ def stable_diffusion_img2img(
 
     :param image: Initial image to work on. Pass either a path or a Pillow image
     :param prompt: Text prompt to guide image generation
+    :param negative_prompt: (optional) Negative text prompt to guide image generation
     :param rounds: (optional) How many inference rounds to do. More rounds yields more coherent results. Default 50
     :param dims: (optional) Dimensions to scale output image to. Default 512x512
     :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
@@ -383,6 +388,7 @@ def stable_diffusion_img2img(
     with autocast('cuda'):
         image = model(
             prompt=prompt,
+            negative_prompt=negative_prompt,
             init_image=image,
             num_inference_steps=rounds,
             strength=strength,
@@ -396,6 +402,7 @@ def stable_diffusion_inpaint(
         image: Union[str, Image.Image],
         mask_image: Union[str, Image.Image],
         prompt: str,
+        negative_prompt: Optional[str] = None,
         dims: Tuple[int, int] = (512,512),
         rounds: int = 50,
         strength: float = 0.75,
@@ -411,6 +418,7 @@ def stable_diffusion_inpaint(
 
     :param image: Initial image to work on. Pass either a path or a Pillow image
     :param prompt: Text prompt to guide image generation
+    :param negative_prompt: (optional) Negative text prompt to guide image generation
     :param rounds: (optional) How many inference rounds to do. More rounds yields more coherent results. Default 50
     :param dims: (optional) Dimensions to scale output image to. Default 512x512
     :param strength: (optional) How much noise to add to the image between 0 and 1 (lower=less noise). Low values correspond to outputs closer to the input. Default 0.75
@@ -452,6 +460,7 @@ def stable_diffusion_inpaint(
     with autocast('cuda'):
         image = model(
             prompt=prompt,
+            negative_prompt=negative_prompt,
             init_image=image,
             mask_image=mask_image,
             num_inference_steps=rounds,
