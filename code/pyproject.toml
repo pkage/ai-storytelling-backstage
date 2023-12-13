@@ -31,7 +31,8 @@ local = [
     'pillow',
     'accelerate',
     'matplotlib',
-    'requests'
+    'requests',
+    'tqdm'
 ]
 
 
