@@ -5,15 +5,23 @@ description = "AI and Storytelling Central Codebase"
 authors = ["Patrick Kage <p.kage@ed.ac.uk>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-transformers = {extras = ["torch"], version = "^4.20.1"}
-min-dalle = "^0.4.4"
-matplotlib = "^3.5.3"
-requests = "^2.28.1"
-ftfy = "^6.1.1"
-diffusers = "=0.11.1"
-torch = "^1.13.1"
-accelerate = "^0.15.0"
+python = ">=3.9,<4.0"
+# transformers = {extras = ["torch"], version = "^4.20.1"}
+# min-dalle = "^0.4.4"
+# matplotlib = "^3.5.3"
+# requests = "^2.28.1"
+# ftfy = "^6.1.1"
+# diffusers = "=0.11.1"
+# torch = "^1.13.1"
+# accelerate = "^0.15.0"
+# poetry install "transformers[torch]" min-dalle matplotlib requests ftfy diffusers torch accelerate
+numpy = "^1.26.2"
+transformers = {extras = ["torch"], version = "^4.36.0"}
+accelerate = "^0.25.0"
+pillow = "^10.1.0"
+diffusers = "^0.24.0"
+min-dalle = "^0.4.11"
+
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^6.15.0"

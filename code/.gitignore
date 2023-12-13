@@ -2,6 +2,7 @@
 model_cache/
 token.txt
 .DS_Store
+test.png
 
 ### Python
 # Byte-compiled / optimized / DLL files
