@@ -15,12 +15,24 @@ python = ">=3.9,<4.0"
 # torch = "^1.13.1"
 # accelerate = "^0.15.0"
 # poetry install "transformers[torch]" min-dalle matplotlib requests ftfy diffusers torch accelerate
-numpy = "^1.26.2"
-transformers = {extras = ["torch"], version = "^4.36.0"}
-accelerate = "^0.25.0"
-pillow = "^10.1.0"
-diffusers = "^0.24.0"
+# numpy = "^1.26.2"
+# transformers = {extras = ["torch"], version = "^4.36.0"}
+# accelerate = "^0.25.0"
+# pillow = "^10.1.0"
+# diffusers = "^0.24.0"
 min-dalle = "^0.4.11"
+
+[tool.poetry.extras]
+local = [
+    'transformers',
+    'torch',
+    'torchvision',
+    'diffusers',
+    'pillow',
+    'accelerate',
+    'matplotlib',
+    'requests'
+]
 
 
 [tool.poetry.dev-dependencies]
