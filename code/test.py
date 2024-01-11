@@ -4,7 +4,7 @@ from transformers import pipeline, set_seed
 from textwrap import dedent
 from pprint import pprint
 
-from aist import text
+from aist import text, image
 # from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
@@ -46,8 +46,7 @@ being typecast and did a hell'''
 # print(summary)
 # print(text.sentiment_analysis(summary))
 
-pprint(text.text_generation('Hello world', model='large', num_return_sequences=1))
+pprint(text.text_generation('Hello world', model='small', num_return_sequences=1))
 
 
-
-
+image.stable_diffusion('Alien landscape with a spaceship landing, trending on artstation').save('test.png')

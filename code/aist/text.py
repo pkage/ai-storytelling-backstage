@@ -275,3 +275,51 @@ def question_answering(
         Position: {answer['start']} to {answer['end']}
     ''')))
 
+
+def instruct(
+        prompt: str,
+        model: str = 'mistralai/Mistral-7B-Instruct-v0.2',
+        accelerate: bool = True,
+        seed: Optional[int] = None,
+        render: bool =True
+    ):
+    '''
+    Have an instruction-tuned model respond to a prompt.
+
+    :param text: The text to fill, with the mask token in it.
+    :param model: (optional) The model to use. (default 'mistralai/Mistral-7B-Instruct-v0.2')
+    :param accelerate: (optional) Whether to use GPU acceleration (if available). Default True
+    :param seed: (optional) Seed value for reproducible pipeline runs.
+    :param render: (optional) Automatically render results for an ipython notebook 
+                   if one is detected. Default True
+    :return: A response from the model.
+    '''
+    # putting this in here just in case it's not supported
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    _seed_if_necessary(seed)
+
+    device = _get_pipeline_device(accelerate=accelerate)
+
+    model = AutoModelForCausalLM.from_pretrained('mistralai/Mistral-7B-Instruct-v0.2')
+    tokenizer = AutoTokenizer.from_pretrained('mistralai/Mistral-7B-Instruct-v0.2')
+
+    messages = [
+        {'role': 'user', 'content': prompt}
+    ]
+
+    encodeds = tokenizer.apply_chat_template(messages, return_tensors="pt")
+
+    model_inputs = encodeds.to(device)
+    model.to(device)
+
+    generated_ids = model.generate(model_inputs, max_new_tokens=1000, do_sample=True)
+    decoded = tokenizer.batch_decode(generated_ids)
+    answer = decoded[0]
+
+    if not render:
+        return answer
+
+    return display(Markdown(dedent(f'''\
+        {answer}
+    ''')))
