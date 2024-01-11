@@ -30,8 +30,8 @@ from pprint import pprint
 
 
 HF_TOKEN_URL = 'https://cdn.ka.ge/vault/hf_aist.txt'
-HF_TOKEN_LOCATION = os.path.expanduser('~/.huggingface')
-HF_TOKEN_PATH = os.path.expanduser('~/.huggingface/token')
+HF_TOKEN_LOCATION = os.path.expanduser('~/.cache/huggingface')
+HF_TOKEN_PATH = os.path.expanduser('~/.cache/huggingface/token')
 
 # this is nasty but we have to make sure the HF model cache directory is
 # created before we load in the transformers library
