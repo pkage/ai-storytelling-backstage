@@ -3,6 +3,7 @@ os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import platform
 import warnings
 from typing import Optional, Tuple, Union
+from tempfile import NamedTemporaryFile
 
 from .common import render_output_text
 from IPython.display import display
@@ -385,11 +386,13 @@ def stable_diffusion_img2img(
         generator = Generator(device).manual_seed(seed)
 
 
+    # nasty hack: for some reason pillow fails here, so we'll use the load_image util
+    # from diffusers after saving the image through a temp file
     with autocast('cuda'):
         image = model(
             prompt=prompt,
             negative_prompt=negative_prompt,
-            init_image=image,
+            image=image,
             num_inference_steps=rounds,
             strength=strength,
             guidance_scale=guidance_scale,
