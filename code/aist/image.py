@@ -3,7 +3,6 @@ os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import platform
 import warnings
 from typing import Optional, Tuple, Union
-from tempfile import NamedTemporaryFile
 
 from .common import render_output_text
 from IPython.display import display
@@ -464,7 +463,7 @@ def stable_diffusion_inpaint(
         image = model(
             prompt=prompt,
             negative_prompt=negative_prompt,
-            init_image=image,
+            image=image,
             mask_image=mask_image,
             num_inference_steps=rounds,
             strength=strength,
