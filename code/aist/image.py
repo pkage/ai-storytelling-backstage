@@ -17,7 +17,7 @@ from min_dalle import MinDalle
 import requests
 
 # captioning
-from transformers import VisionEncoderDecoderModel, ViTFeatureExtractor, AutoTokenizer
+from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 
 # import torch with this flag to enable apple silicon fallback acceleration
 import torch
@@ -502,9 +502,10 @@ def image_caption(
 
     # load in from HF
     model_name = 'nlpconnect/vit-gpt2-image-captioning'
-    feature_extractor = ViTFeatureExtractor.from_pretrained(model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+
     model = VisionEncoderDecoderModel.from_pretrained(model_name)
+    feature_extractor = ViTImageProcessor.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     # move to accelerator device
     # MPS (M1/2 platform) is not supported
@@ -512,10 +513,14 @@ def image_caption(
     model.to(device)
 
     # do feature extraction
-    pixel_values = feature_extractor(images=[image], return_tensors='pt').pixel_values
+    max_length = 16
+    num_beams = 4
+    gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
+
+    pixel_values = feature_extractor(images=[image], return_tensors="pt").pixel_values
     pixel_values = pixel_values.to(device)
 
-    output_ids = model.generate(pixel_values, max_length=max_length, num_beams=num_beams)
+    output_ids = model.generate(pixel_values, **gen_kwargs)
 
     preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)
     preds = [pred.strip() for pred in preds]
