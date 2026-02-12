@@ -25,7 +25,7 @@ def _describe_result(result: Any) -> str:
 
 def _run(name: str, fn: Callable[..., Any], **kwargs: Any) -> tuple[bool, str]:
     try:
-        result = fn(**kwargs)
+        result = fn(**kwargs
         return True, _describe_result(result)
     except Exception:
         return False, traceback.format_exc(limit=1).strip()
@@ -46,7 +46,7 @@ def self_test() -> int:
                 "max_length": 20,
                 "min_length": 5,
                 "do_sample": False,
-                "accelerate": False,
+                "accelerate": True,
                 "seed": 1,
                 "render": False,
             },
@@ -59,7 +59,7 @@ def self_test() -> int:
                 "model": "small",
                 "max_length": 20,
                 "num_return_sequences": 1,
-                "accelerate": False,
+                "accelerate": True,
                 "seed": 1,
                 "render": False,
             },
@@ -69,7 +69,7 @@ def self_test() -> int:
             text.sentiment_analysis,
             {
                 "text": "I love this.",
-                "accelerate": False,
+                "accelerate": True,
                 "seed": 1,
                 "render": False,
             },
@@ -79,7 +79,7 @@ def self_test() -> int:
             text.mask_filling,
             {
                 "text": "Paris is the [MASK] of France.",
-                "accelerate": False,
+                "accelerate": True,
                 "seed": 1,
                 "render": False,
             },
@@ -90,7 +90,7 @@ def self_test() -> int:
             {
                 "question": "What is the capital of France?",
                 "context": "France has many cities. Paris is its capital.",
-                "accelerate": False,
+                "accelerate": True,
                 "seed": 1,
                 "render": False,
             },
@@ -100,7 +100,7 @@ def self_test() -> int:
             text.instruct,
             {
                 "prompt": "Say hello in one short sentence.",
-                "accelerate": False,
+                "accelerate": True,
                 "seed": 1,
                 "render": False,
             },
@@ -113,7 +113,7 @@ def self_test() -> int:
                 "grid_size": 1,
                 "model_size": "mini",
                 "temperature": 1.0,
-                "show_in_progress": False,
+                "show_in_progress": True,
                 "accelerate": False,
                 "render": False,
                 "seed": 1,
@@ -124,7 +124,7 @@ def self_test() -> int:
             image.stable_diffusion,
             {
                 "prompt": "A line drawing of a cat",
-                "accelerate": False,
+                "accelerate": True,
                 "rounds": 1,
                 "dims": (128, 128),
                 "unsafe": True,
@@ -137,7 +137,7 @@ def self_test() -> int:
             {
                 "image": src_image,
                 "prompt": "Turn this into a watercolor",
-                "accelerate": False,
+                "accelerate": True,
                 "rounds": 1,
                 "dims": (128, 128),
                 "strength": 0.5,
@@ -153,7 +153,7 @@ def self_test() -> int:
                 "image": src_image,
                 "mask_image": mask_image,
                 "prompt": "Add a blue circle",
-                "accelerate": False,
+                "accelerate": True,
                 "rounds": 1,
                 "dims": (128, 128),
                 "strength": 0.5,
@@ -169,7 +169,7 @@ def self_test() -> int:
                 "image": src_image,
                 "max_length": 8,
                 "num_beams": 1,
-                "accelerate": False,
+                "accelerate": True,
                 "render": False,
             },
         ),
@@ -206,6 +206,3 @@ def self_test() -> int:
     print(f"Done. Passed: {passed}, Failed: {failed}, Total: {len(tests)}")
     return 0 if failed == 0 else 1
 
-
-if __name__ == "__main__":
-    raise SystemExit(main())
