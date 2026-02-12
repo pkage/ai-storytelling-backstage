@@ -25,7 +25,7 @@ def _describe_result(result: Any) -> str:
 
 def _run(name: str, fn: Callable[..., Any], **kwargs: Any) -> tuple[bool, str]:
     try:
-        result = fn(**kwargs
+        result = fn(**kwargs)
         return True, _describe_result(result)
     except Exception:
         return False, traceback.format_exc(limit=1).strip()
