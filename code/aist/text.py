@@ -285,10 +285,10 @@ def question_answering(
     device = _get_pipeline_device(accelerate=accelerate)
     pipe = pipeline(task='question-answering', model=model, device=device)
 
-    answer = pipe({
-        'question': question,
-        'context': context
-    })
+    answer = pipe(
+        question=question,
+        context=context
+    )
 
     if not render:
         return answer
