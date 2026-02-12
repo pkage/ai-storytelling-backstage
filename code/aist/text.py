@@ -18,6 +18,7 @@ def _setup():
 _setup()
 
 
+import torch
 from transformers import pipeline, set_seed # type: ignore
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from transformers.utils.logging import set_verbosity_error
@@ -83,8 +84,9 @@ def summarization(
     device = _get_pipeline_device(accelerate=accelerate)
     model_name = model # for 
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name).to(device)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    model.eval()
     
     # 2. Preprocess: Tokenize the input text
     # The pipeline handles both single strings and lists of strings
@@ -97,12 +99,13 @@ def summarization(
     
     # 3. Forward: Generate output IDs
     # Incorporates the default generation config mentioned in the class
-    summary_ids = model.generate(
-        inputs["input_ids"],
-        attention_mask=inputs.get("attention_mask"),
-        max_new_tokens=1000,
-        num_beams=8,
-    )
+    with torch.no_grad():
+        summary_ids = model.generate(
+            inputs["input_ids"],
+            attention_mask=inputs.get("attention_mask"),
+            max_new_tokens=1000,
+            num_beams=8,
+        )
     
     # 4. Postprocess: Decode the tokens back to text
     results = []
