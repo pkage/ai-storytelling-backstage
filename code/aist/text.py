@@ -19,6 +19,7 @@ _setup()
 
 
 from transformers import pipeline, set_seed # type: ignore
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from transformers.utils.logging import set_verbosity_error
 
 from typing import List, Any, Optional
@@ -80,23 +81,44 @@ def summarization(
     _seed_if_necessary(seed)
 
     device = _get_pipeline_device(accelerate=accelerate)
-    pipe = pipeline(task='summarization', model=model, device=device)
+    model_name = model # for 
 
-    results = pipe(
-        text,
-        max_length=max_length,
-        min_length=min_length,
-        do_sample=do_sample
+    tokenizer = AutoTokenizer.from_pretrained(model_name).to(device)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    
+    # 2. Preprocess: Tokenize the input text
+    # The pipeline handles both single strings and lists of strings
+    inputs = tokenizer(
+        text, 
+        return_tensors="pt", 
+        padding=True, 
+        truncation=True
+    ).to(device)
+    
+    # 3. Forward: Generate output IDs
+    # Incorporates the default generation config mentioned in the class
+    summary_ids = model.generate(
+        inputs["input_ids"],
+        attention_mask=inputs.get("attention_mask"),
+        max_new_tokens=1000,
+        num_beams=8,
     )
-
-    # convert results to a list of strings
-    results = [r['summary_text'] for r in results]
-
+    
+    # 4. Postprocess: Decode the tokens back to text
+    results = []
+    for output_id in summary_ids:
+        decoded_text = tokenizer.decode(
+            output_id, 
+            skip_special_tokens=True, 
+            clean_up_tokenization_spaces=False
+        )
+        results.append(decoded_text)
+        
     # skip render attempt if not requested
     if not render:
-        return results
+        return results[0]
 
-    return render_output_text(results)
+    return render_output_text(results[0])
 
 
 def text_generation(
