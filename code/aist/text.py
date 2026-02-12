@@ -119,9 +119,9 @@ def summarization(
         
     # skip render attempt if not requested
     if not render:
-        return results[0]
+        return results
 
-    return render_output_text(results[0])
+    return render_output_text(results)
 
 
 def text_generation(
